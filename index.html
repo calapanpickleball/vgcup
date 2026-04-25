@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vice Governor's Cup</title>
+  <title>Game Schedule Viewer</title>
   <style>
     * {
       box-sizing: border-box;
@@ -196,15 +196,12 @@
 </head>
 <body>
   <div class="container">
-    <h1>Vice Governor's Pickleball Cup</h1>
+    <h1>Vice Governor's Cup - Pickleball Tournament</h1>
+    <h4>hosted by: Vice Governor Jojo Perez</h4>
 
     <div class="filters">
       <select id="categoryFilter">
         <option value="">All Categories</option>
-      </select>
-
-      <select id="statusFilter">
-        <option value="">All Status</option>
       </select>
 
       <input
@@ -229,7 +226,6 @@
     let filteredRows = [];
 
     const categoryFilter = document.getElementById("categoryFilter");
-    const statusFilter = document.getElementById("statusFilter");
     const searchInput = document.getElementById("searchInput");
     const content = document.getElementById("content");
     const summary = document.getElementById("summary");
@@ -308,35 +304,15 @@
       });
     }
 
-    function populateStatus() {
-      const statuses = [...new Set(allRows.map(row => (row.STATUS || "Pending")).filter(Boolean))].sort();
-
-      statuses.forEach(status => {
-        const option = document.createElement("option");
-        option.value = status;
-        option.textContent = status;
-        statusFilter.appendChild(option);
-      });
-    });
-    }
-
     function applyFilters() {
       const selectedCategory = categoryFilter.value;
-      const selectedStatus = statusFilter.value;
       const searchTerm = searchInput.value.trim().toLowerCase();
 
       filteredRows = allRows.filter(row => {
-        const rowStatus = row.STATUS || "Pending";
-
         const matchesCategory = !selectedCategory || row.CATEGORY === selectedCategory;
-        const matchesStatus = !selectedStatus || rowStatus === selectedStatus;
         const matchesSearch = !searchTerm || getPlayerText(row).includes(searchTerm);
-
-        return matchesCategory && matchesStatus && matchesSearch;
+        return matchesCategory && matchesSearch;
       });
-
-      render();
-    });
 
       render();
     }
@@ -456,7 +432,6 @@
         filteredRows = [...allRows];
 
         populateCategories();
-        populateStatus();
         render();
       } catch (error) {
         content.className = "error";
@@ -465,7 +440,6 @@
     }
 
     categoryFilter.addEventListener("change", applyFilters);
-    statusFilter.addEventListener("change", applyFilters);
     searchInput.addEventListener("input", applyFilters);
 
     loadCSV();
